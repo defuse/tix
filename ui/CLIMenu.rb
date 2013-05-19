@@ -193,10 +193,20 @@ class CLIMenu
     end
     return :_nomatch_climenu_1z1z if items == 0
 
+    unfilter_added = false
     @persistent.each do |item|
-      menu.addPersistent( item, item.text, false )
+      if item.key == :_unfilter_climenu_1z1z
+        unfilter_added = true
+        menu.addPersistent( item.key, item.text, true )
+      else
+        menu.addPersistent( item.key, item.text, false )
+      end
     end
-    menu.addPersistent( :_unfilter_climenu_1z1z, 'Clear filter', true )
+    # Only add the unfilter menu if it's not already there. This happens when
+    # two or more filters are applied at the same time.
+    unless unfilter_added 
+      menu.addPersistent( :_unfilter_climenu_1z1z, 'Clear filter', true )
+    end
 
     item = menu.show
     if item == :_unfilter_climenu_1z1z or item == nil
